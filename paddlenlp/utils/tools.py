@@ -364,6 +364,29 @@ class DataConverter(object):
             offsets.append((spos, positions[-1] + 1))
             return offsets
 
+        def _find_segment_in_box_by_text(layouts, box, text, threshold=0.7):
+            offsets = []
+            if not text:
+                return offsets
+            global_offset = 0
+            for segment in layouts:
+                segment_text = segment[1]
+                if not segment_text:
+                    continue
+                if text in segment_text:
+                    sbox = segment[0]
+                    covered = _io1(sbox, box)
+                    if covered >= threshold:
+                        index = segment_text.find(text)
+                        global_offset += index
+                        offsets.append((global_offset, global_offset + len(text)))
+                        break
+                    else:
+                        global_offset += len(segment_text)
+                else:
+                    global_offset += len(segment_text)
+            return offsets
+
         items = {}
         img_file = os.path.basename(line["data"]["image"])
         p = img_file.find("-")
@@ -399,6 +422,35 @@ class DataConverter(object):
 
             result_list = line["annotations"][0]["result"]
             ent_ids = []
+
+            for l in result_list:
+                if l["type"] != "labels":
+                    continue
+                box = [
+                    l["value"]["x"] * 0.01 * img_w,
+                    l["value"]["y"] * 0.01 * img_h,
+                    (l["value"]["x"] + l["value"]["width"]) * 0.01 * img_w,
+                    (l["value"]["y"] + l["value"]["height"]) * 0.01 * img_h,
+                ]
+
+                text = ""
+                for t in result_list:
+                    if t["type"] == "textarea" and t["id"] == l["id"]:
+                        text = t["value"]["text"][0]
+                        break
+
+                offsets = _find_segment_in_box_by_text(parsed_doc["layout"], box, text)
+                if len(offsets) > 0:
+                    items["entities"].append(
+                        {
+                            "id": l["id"],
+                            "start_offset": offsets[0][0],
+                            "end_offset": offsets[0][1],
+                            "label": l["value"]["labels"][0],
+                        }
+                    )
+                    ent_ids.append(l["id"])
+
             for e in result_list:
                 if e["type"] != "rectanglelabels":
                     continue
