@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import sys
 from dataclasses import dataclass, field
 from functools import partial
 from typing import List, Optional
@@ -20,6 +21,7 @@ from typing import List, Optional
 import paddle
 from utils import convert_example, reader
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 from paddlenlp.datasets import load_dataset
 from paddlenlp.trainer import (
     CompressionArguments,

@@ -17,12 +17,14 @@ import argparse
 import json
 import os
 import random
+import sys
 import time
 from decimal import Decimal
 
 import numpy as np
 import paddle
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from paddlenlp.trainer.argparser import strtobool
 from paddlenlp.utils.log import logger
 from paddlenlp.utils.tools import DataConverter
