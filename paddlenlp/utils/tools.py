@@ -364,7 +364,7 @@ class DataConverter(object):
             offsets.append((spos, positions[-1] + 1))
             return offsets
 
-        def _find_segment_in_box_by_text(layouts, box, text, threshold=0.7):
+        def _find_segment_in_box_by_text(layouts, box, text, threshold=0.5):
             offsets = []
             if not text:
                 return offsets
@@ -375,7 +375,7 @@ class DataConverter(object):
                     continue
                 if text in segment_text:
                     sbox = segment[0]
-                    covered = _io1(sbox, box)
+                    covered = _io1(box, sbox)
                     if covered >= threshold:
                         index = segment_text.find(text)
                         global_offset += index
