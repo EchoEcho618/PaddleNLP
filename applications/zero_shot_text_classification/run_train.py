@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import os
+import sys
 from dataclasses import dataclass, field
 
 import paddle
@@ -20,6 +21,7 @@ from paddle.static import InputSpec
 from sklearn.metrics import f1_score
 from utils import UTCLoss, read_local_dataset
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from paddlenlp.datasets import load_dataset
 from paddlenlp.prompt import (
     PromptModelForSequenceClassification,

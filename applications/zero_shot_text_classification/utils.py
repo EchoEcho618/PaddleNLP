@@ -15,10 +15,12 @@
 
 import json
 import os
+import sys
 
 import numpy as np
 import paddle
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from paddlenlp.utils.log import logger
 
 
